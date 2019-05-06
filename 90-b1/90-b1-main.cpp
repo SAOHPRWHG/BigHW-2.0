@@ -15,7 +15,7 @@ void GameF(struct ball_info map[][MAX_FRAME], int row, int col);
 void GameG(struct ball_info map[][MAX_FRAME], int row, int col);
 void GameH(struct ball_info map[][MAX_FRAME], int row, int col);
 void GameI(struct ball_info map[][MAX_FRAME], int row, int col);
-
+   
 int tj_strchr(const char str[], char ch)
 {
 	/* 注意：函数内不允许定义任何形式的数组（包括静态数组） */
