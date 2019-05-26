@@ -1,6 +1,7 @@
 /* 1751957 ¼Æ2°à ÓáÉÙ×÷ */
 #include <iostream>
 #include "../common/cmd_console_tools.h"
+#include "../common/cmd_gmw_tools.h"
 #include "90-b1.h"
 using namespace std;
 

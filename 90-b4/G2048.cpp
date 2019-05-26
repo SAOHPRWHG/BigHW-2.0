@@ -440,7 +440,7 @@ int G2048::Game_start()
 	int maction, mrow, mcol;
 	int keycode1, keycode2;
 	int ret;
-	//char temp[CHAR_LEN];
+	char temp[CHAR_LEN];
 
 	while (1) {
 		switch (Gameover()) {
@@ -474,44 +474,48 @@ int G2048::Game_start()
 			case 0xE0: //224
 				switch (keycode2) {
 				case KB_ARROW_UP:
-					/* 下状态栏显示内容 */
-					gmw_status_line(&G2048_CGI, LOWER_STATUS_LINE, "[读到上箭头]", NULL);
+					/* 上状态栏显示内容 */
 					//Align(DOWN_TO_UP);//对齐
 					Check_remove(DOWN_TO_UP);//检查消除，计分
 					Move_animation(DOWN_TO_UP);//显示移动合并动画
 					Clear_status();//清理状态
 					Produce_new_block(1);//生成并显示新球，记得新球要重置状态
 					//print_map();
+					sprintf(temp, "目标分数：%d 当前得分：%d", dst_score, score);
+					gmw_status_line(&G2048_CGI, TOP_STATUS_LINE, temp, NULL);
 					break;
 				case KB_ARROW_DOWN:
 					/* 下状态栏显示内容 */
-					gmw_status_line(&G2048_CGI, LOWER_STATUS_LINE, "[读到下箭头]", NULL);
 					//Align(UP_TO_DOWN);//对齐
 					Check_remove(UP_TO_DOWN);//检查消除，计分
 					Move_animation(UP_TO_DOWN);//显示移动合并动画
 					Clear_status();//清理状态
 					Produce_new_block(1);//生成并显示新球，记得新球要重置状态
 					//print_map();
+					sprintf(temp, "目标分数：%d 当前得分：%d", dst_score, score);
+					gmw_status_line(&G2048_CGI, TOP_STATUS_LINE, temp, NULL);
 					break;
 				case KB_ARROW_LEFT:
 					/* 下状态栏显示内容 */
-					gmw_status_line(&G2048_CGI, LOWER_STATUS_LINE, "[读到左箭头]", NULL);
-					//Align(RIGHT_TO_LEFT);//对齐
+				//Align(RIGHT_TO_LEFT);//对齐
 					Check_remove(RIGHT_TO_LEFT);//检查消除，计分
 					Move_animation(RIGHT_TO_LEFT);//显示移动合并动画
 					Clear_status();//清理状态
 					Produce_new_block(1);//生成并显示新球，记得新球要重置状态
 					//print_map();
+					sprintf(temp, "目标分数：%d 当前得分：%d", dst_score, score);
+					gmw_status_line(&G2048_CGI, TOP_STATUS_LINE, temp, NULL);
 					break;
 				case KB_ARROW_RIGHT:
 					/* 下状态栏显示内容 */
-					gmw_status_line(&G2048_CGI, LOWER_STATUS_LINE, "[读到右箭头]", NULL);
 					//Align(LEFT_TO_RIGHT);//对齐
 					Check_remove(LEFT_TO_RIGHT);//检查消除，计分
 					Move_animation(LEFT_TO_RIGHT);//显示移动合并动画
 					Clear_status();//清理状态
 					Produce_new_block(1);//生成并显示新球，记得新球要重置状态
 					//print_map();
+					sprintf(temp, "目标分数：%d 当前得分：%d", dst_score, score);
+					gmw_status_line(&G2048_CGI, TOP_STATUS_LINE, temp, NULL);
 					break;
 				}
 				break;

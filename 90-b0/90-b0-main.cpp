@@ -1,7 +1,10 @@
 /* 1751957 计2班 俞少作 */
 #include "../common/cmd_hdc_tools.h"
+#include "../common/cmd_gmw_tools.h"
 #include "90-b0.h"
 using namespace std;
+/*敬爱的沈老师：
+     非常抱歉，本次大作业由于种种原因未能完全实现对90-b0及90-b1内容的重构，对不起您*/
 
 int menu();
 void Game1(int a[][MAX_FRAME], int row, int col);

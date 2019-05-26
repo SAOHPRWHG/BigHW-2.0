@@ -1,5 +1,6 @@
 /* 1751957 ¼Æ2°à ÓáÉÙ×÷ */
 #include "../common/cmd_hdc_tools.h"
+#include "../common/cmd_gmw_tools.h"
 #include "90-b0.h"
 using namespace std;
 

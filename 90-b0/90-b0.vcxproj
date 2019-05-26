@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
+    <ClCompile Include="..\common\cmd_gmw_tools.cpp" />
     <ClCompile Include="90-b0-base.cpp" />
     <ClCompile Include="90-b0-console.cpp" />
     <ClCompile Include="90-b0-main.cpp" />
@@ -130,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\cmd_console_tools.h" />
+    <ClInclude Include="..\common\cmd_gmw_tools.h" />
     <ClInclude Include="90-b0.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
