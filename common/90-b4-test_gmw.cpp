@@ -88,6 +88,8 @@ static void test_by_fixed(void)
 		色块为双框线，颜色（未完）		*/
 	gmw_init(&MyCGI);
 
+	//测试行
+	//gmw_set_frame_style(&MyCGI, 4, 2, false);
 	if (1) {
 		/* 显示初始化的框架 */
 		gmw_draw_frame(&MyCGI);
@@ -127,7 +129,7 @@ static void test_by_fixed(void)
 		gmw_set_frame_default_linetype(&MyCGI, 2);			//设置框架线型为预置值2（全部为单线）
 		gmw_set_rowno_switch(&MyCGI, true);					//显示行号
 		gmw_set_colno_switch(&MyCGI, true);					//显示列标
-			gmw_set_delay(&MyCGI, DELAY_OF_DRAW_FRAME, 200);		//画边框的延时
+		gmw_set_delay(&MyCGI, DELAY_OF_DRAW_FRAME, 200);		//画边框的延时
 		gmw_set_block_border_switch(&MyCGI, true);			//设置色块需要小边框
 
 		/* 显示框架 */
@@ -901,6 +903,7 @@ static void test_step_of_2048(CONSOLE_GRAPHICS_INFO *pG2048_CGI)
 	gmw_set_rowcol(pG2048_CGI, row, col);
 
 	/* 显示框架 */
+
 	gmw_draw_frame(pG2048_CGI);
 
 	/* 上状态栏显示内容 */
@@ -950,7 +953,7 @@ static void test_step_of_2048(CONSOLE_GRAPHICS_INFO *pG2048_CGI)
 	g2048[2][0 + 3] = g2048[2][0];
 	g2048[2][0] = 0;
 	to_be_continued(gname, "向右移动3格", pG2048_CGI);
-
+	
 	/* 模拟一次向下的合并
 	   注：1、仅做了相同数字合并的演示，其余未做
 		   2、未修改数组的值 */

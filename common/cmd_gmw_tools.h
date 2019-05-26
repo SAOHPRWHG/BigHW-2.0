@@ -181,6 +181,7 @@ typedef struct _console_font_type_ {
 typedef struct _console_graphics_info_ {
 	/* 【下面定义的是可通过设置函数改变的值，不准修改成员名】 */
 
+
 	/* 主框架信息 */
 	CONSOLE_FRAME_INFO CFI;		//136字节
 
@@ -231,7 +232,7 @@ typedef struct _console_graphics_info_ {
 	int start_y;
 
 	/* cmd窗口的大小 */
-	int lines;		//为了给中文输入法提示行及运行结束的提示信息留空间，要求在计算得到的结果基础上（上额外空间+上状态栏+列标显示+主区域+下状态栏）+ 4（1中文输入法提示行+3预留空行）
+	int lines;		//为了给中文输入法提示行及运行结束的提示信息留空间，要求在计算得到的结果基础上（上额外空间+上状态栏+列标显示+主区域+下状态栏+下额外空间）+ 4（1中文输入法提示行+3预留空行）
 	int cols;
 
 	/* 【下面允许添加你认为需要的值，这些值不能通过设置函数直接设置，只是为了方便程序中调用(不需要每次重复计算)
@@ -240,20 +241,24 @@ typedef struct _console_graphics_info_ {
            例如：int data1;
                  int data2;
                  char pad[56]; 】 */
-	char pad[64];
+	/*主区域宽度与高度*/
+	int main_width;//在set_rowcol中设置：main_width = col*bwidth + 2*2(左右边框)
+	int main_high;//main_width = row* bhigh+ 2 (上下边框)
+
+	char pad[56];
 
 } CONSOLE_GRAPHICS_INFO;
 
 /* 定义色块的四种移动方向 */
 #define DOWN_TO_UP		0
-#define UP_TO_DOWN		1
+#define UP_TO_DOWN		3
 #define RIGHT_TO_LEFT	2
-#define LEFT_TO_RIGHT	3
+#define LEFT_TO_RIGHT	1
 
 /* 设置整个窗口的某些参数 */
 int gmw_set_rowcol(CONSOLE_GRAPHICS_INFO *const pCGI, const int row, const int col);
 int gmw_set_color(CONSOLE_GRAPHICS_INFO *const pCGI, const int bgcolor = COLOR_BLACK, const int fgcolor = COLOR_WHITE, const bool cascade = true);
-int gmw_set_font(CONSOLE_GRAPHICS_INFO *const pCGI, const char *fontname = "Terminal", const int fs_high = 16, const int fs_width = 8);
+int gmw_set_font(CONSOLE_GRAPHICS_INFO *const pCGI, const char *fontname = "Terminal", const int fs_high = 8, const int fs_width = 16);
 int gmw_set_delay(CONSOLE_GRAPHICS_INFO *const pCGI, const int type, const int delay_ms);
 int gmw_set_ext_rowcol(CONSOLE_GRAPHICS_INFO *const pCGI, const int up_lines = 0, const int down_lines = 0, const int left_cols = 0, const int right_cols = 0);
 

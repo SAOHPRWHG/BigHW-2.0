@@ -115,8 +115,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\90-b4\90-b4-main.cpp" />
     <ClCompile Include="90-b2-yinyang.cpp" />
+    <ClCompile Include="90-b4-test_gmw.cpp" />
     <ClCompile Include="cmd_console_test.cpp" />
     <ClCompile Include="cmd_console_tools.cpp" />
     <ClCompile Include="cmd_hdc_tools.cpp" />

@@ -332,17 +332,17 @@ int main()
 			} //end of if (CCT_MOUSE_EVENT)
 			else if (ret == CCT_KEYBOARD_EVENT) {
 				/* 转到第9行进行打印 */
-				gotoxy(0, 9);
-				cout << "[当前按键] : ";
+				//gotoxy(0, 9);
+				//cout << "[当前按键] : ";
 
 				switch (keycode1) {
 					case 27:	//ESC键
 						loop = 0;
-						cout << "ESC       ";
+						//cout << "ESC       ";
 						break;
 					case 32:	//SPACE键
 						loop = 0;
-						cout << "SPACE     ";
+						//cout << "SPACE     ";
 						break;
 					case 224:
 						switch (keycode2) {

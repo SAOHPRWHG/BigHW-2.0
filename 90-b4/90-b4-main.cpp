@@ -1,23 +1,81 @@
-/* 学号 姓名 班级 */
-#include <iostream>
-#include "../common/cmd_console_tools.h"
+/* 1751957 计2班 俞少作 */
+#include "90-b4.h"
+#include "G2048.h"
 using namespace std;
+
+void Input(int * x, int lower, int upper, const char str[])
+{
+	while (1) {
+		cout << str;
+		cin >> *x;
+		if (!cin.good()) {
+			cin.clear();
+			cin.ignore(1024, '\n');
+		}
+
+		else if (*x <= upper && *x >= lower)
+			break;
+	}
+}
 
 int main()
 {
-	int x, y;
+	int col, row;
+	int dst_score;//目标分数
+	int speed;//延时等级
 
-	/* 显示16*16的配色框，每个字符之间加一个空格 */
-	for (y = 0; y < 16; y++) {
-		for (x = 0; x < 16; x++)
-			showch(x * 2, y, 'x', y, x, 2);	//在xy位置显示x，用x坐标的值做前景色，y坐标的值做背景色（显示两个x是为了使比例协调，可以换成一个x后观察效果）
-		cout << endl; //16个前景色变换完成后，换一行
-		Sleep(100);  //延时0.1秒（以毫秒为单位，1000=1秒）
-	} //end of for
+	G2048 g2048;
+	while (1) {
+		cls();
+		Input(&row, MIN_FRAME, MAX_FRAME, "请输入行数[4-8]：");
+		Input(&col, MIN_FRAME, MAX_FRAME, "请输入列数[4-8]：");
+		Input(&dst_score, 8192, 65536, "请输入目标分数[8192-65536]：");
+		Input(&speed, 0, 5, "请输入动画延时[0-5]：");
 
-	//恢复初始颜色
-	setcolor();
-	cout << endl << "90-b4" << endl << endl;
+		g2048.set(row, col, dst_score, speed);
+
+
+		/*test
+		g2048.Init_map();
+		g2048.print_map();
+		getchar(); getchar(); getchar();
+		g2048.Align(DOWN_TO_UP);
+		g2048.print_map();
+		getchar(); getchar(); getchar();
+		g2048.Check_remove(DOWN_TO_UP);
+		g2048.print_map();
+		getchar(); getchar(); getchar();
+		g2048.Align(UP_TO_DOWN);
+		g2048.print_map();
+		getchar(); getchar(); getchar();
+		g2048.Check_remove(UP_TO_DOWN);
+		g2048.print_map();
+		getchar(); getchar(); getchar();
+		g2048.Align(LEFT_TO_RIGHT);
+		g2048.print_map();
+		getchar(); getchar(); getchar();
+		g2048.Check_remove(LEFT_TO_RIGHT);
+		g2048.print_map();
+		getchar(); getchar(); getchar();
+		g2048.Align(RIGHT_TO_LEFT);
+		g2048.print_map();
+		getchar(); getchar(); getchar();
+		g2048.Check_remove(RIGHT_TO_LEFT);
+		g2048.print_map();
+		getchar(); getchar(); getchar();*/
+		
+		switch (g2048.Game_start())
+		{
+			case 'R':
+			case 'r':
+				continue;
+				break;
+			case 'Q':
+			case 'q':
+				return 0;
+				break;
+		}
+	}
 
 	return 0;
 }

@@ -673,8 +673,7 @@ void setconsolefont(const int font_no)
             给出fontname时，非"新宋体"全部做为缺省字体(Terminal-"点阵字体")
 ***************************************************************************/
 void setfontsize(const char *fontname, const int high, const int width)
-{
-	CONSOLE_FONT_INFOEX infoex = { 0 };
+{	CONSOLE_FONT_INFOEX infoex = { 0 };
 
 	infoex.cbSize = sizeof(CONSOLE_FONT_INFOEX);
 	infoex.dwFontSize.X = width;		// 字体宽度，对于Truetype字体，不需要宽度，为0即可，对于点阵字体，如果宽度为0，则选指定高度存在的宽度

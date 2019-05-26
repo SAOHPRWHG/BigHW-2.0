@@ -118,14 +118,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\90-b4-test_gmw.cpp" />
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
     <ClCompile Include="..\common\cmd_gmw_tools.cpp" />
+    <ClCompile Include="90-b4-main.cpp" />
+    <ClCompile Include="G2048.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\cmd_console_tools.h" />
     <ClInclude Include="..\common\cmd_gmw_tools.h" />
     <ClInclude Include="..\common\cmd_tgmw_tools.h" />
+    <ClInclude Include="90-b4.h" />
+    <ClInclude Include="G2048.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\common\cmd_tgmw_tools.lib" />
