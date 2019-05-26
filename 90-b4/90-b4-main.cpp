@@ -37,21 +37,18 @@ int main()
 
 		/*test
 		g2048.Init_map();
-		g2048.print_map();
-		getchar(); getchar(); getchar();
-		g2048.Align(DOWN_TO_UP);
-		g2048.print_map();
-		getchar(); getchar(); getchar();
-		g2048.Check_remove(DOWN_TO_UP);
-		g2048.print_map();
-		getchar(); getchar(); getchar();
-		g2048.Align(UP_TO_DOWN);
-		g2048.print_map();
-		getchar(); getchar(); getchar();
-		g2048.Check_remove(UP_TO_DOWN);
-		g2048.print_map();
-		getchar(); getchar(); getchar();
-		g2048.Align(LEFT_TO_RIGHT);
+		//g2048.print_map();
+		//getchar(); getchar(); getchar();
+		//g2048.Check_remove(UP_TO_DOWN);
+		//g2048.print_map();
+		//getchar(); getchar(); getchar();	
+		//g2048.Check_remove(DOWN_TO_UP);
+		//g2048.print_map();
+		//getchar(); getchar(); getchar();
+		
+		//g2048.print_map();
+		//getchar(); getchar(); getchar();
+		//g2048.Align(LEFT_TO_RIGHT);
 		g2048.print_map();
 		getchar(); getchar(); getchar();
 		g2048.Check_remove(LEFT_TO_RIGHT);

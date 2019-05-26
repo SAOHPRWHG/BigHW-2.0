@@ -87,27 +87,89 @@ int G2048::right_align(int r)
 
 int G2048::up_check(int c)
 {
-	int p1;
-	for (p1 = 0; p1 + 1 < row; p1++) {
-		if (map[p1][c].value == 0)
-			break;
-		if (map[p1 + 1][c].value == map[p1][c].value) {
-			
+	int p1 = 0, p2 = 0, p3 = 0;//p1为目标位置，p2为原位置
+	int tem;
+	for (; 1; p1++) {
+		if (map[p1][c].value!=0) {
+			p2 = p1;
+		}
+		else {
+			for (p2 = p1; p2 < row && map[p2][c].value == 0; p2++)
+				;
+		}
+
+		if (p1 == row || p2 == row)
+			break;//说明到底了，否则说明找到
+		//如果找到则交换值
+		tem = map[p1][c].value;
+		map[p1][c].value = map[p2][c].value;
+		map[p2][c].value = tem;
+		map[p2][c].dcol = c;
+		map[p2][c].drow = p1;
+
+		//再向后找一个
+		for (p3 = p2 + 1; p3 < row && map[p3][c].value == 0; p3++)
+			;
+		if (p3 == row)
+			break;//说明到底了，否则说明找到
+		//上下两个值相等
+		if (map[p3][c].value == map[p1][c].value) {
 			map[p1][c].value *= 2;
-			map[p1][c].status = WAIT_COMBINE;
-			
-			map[p1 + 1][c].value = 0;
-			map[p1 + 1][c].status = COMBINE;
-			map[p1 + 1][c].drow = p1;
-		}		
+			score += map[p1][c].value;//计分
+			map[p3][c].value = 0;
+			map[p3][c].dcol = c;
+			map[p3][c].drow = p1;
+
+			map[p2][c].status = WAIT_COMBINE;
+			map[p3][c].status = COMBINE;
+		}
+
 	}
-	up_align(c);
 	return 0;
 }
 
 int G2048::down_check(int c)
 {
-	int p1;
+	//up换down 1. ++->-- 2.p1 = row - 1; p1 - 1 >= 0; p1--
+	int p1 = row - 1, p2 = row - 1, p3 = row - 1;//p1为目标位置，p2为原位置
+	int tem;
+	for (; 1; p1--) {
+		if (map[p1][c].value != 0) {
+			p2 = p1;
+		}
+		else
+			for (p2 = p1; p2 >= 0 && map[p2][c].value == 0; p2--)
+				;
+		if (p1 < 0 || p2 < 0)
+			break;//说明到底了，否则说明找到
+		//如果找到则交换值
+		tem = map[p1][c].value;
+		map[p1][c].value = map[p2][c].value;
+		map[p2][c].value = tem;
+		map[p2][c].dcol = c;
+		map[p2][c].drow = p1;
+
+		//再向后找一个
+		for (p3 = p2 - 1; p3 >= 0 && map[p3][c].value == 0; p3--)
+			;
+		if (p3 < 0)
+			break;//说明到底了，否则说明找到
+		//上下两个值相等
+		if (map[p3][c].value == map[p1][c].value) {
+			map[p1][c].value *= 2;
+			score += map[p1][c].value;//计分
+			map[p3][c].value = 0;
+			map[p3][c].dcol = c;
+			map[p3][c].drow = p1;
+
+			map[p2][c].status = WAIT_COMBINE;
+			map[p3][c].status = COMBINE;
+		}
+
+	}
+	return 0;
+	
+	/*int p1;
 	for (p1 = row - 1; p1 - 1 >= 0; p1--) {
 		if (map[p1][c].value == 0)
 			break;
@@ -122,12 +184,50 @@ int G2048::down_check(int c)
 		}
 	}
 	down_align(c);
-	return 0;
+	return 0;*/
 }
 
 int G2048::left_check(int r)
 {
-	int p1;
+	int p1 = 0, p2 = 0, p3 = 0;//p1为目标位置，p2为原位置
+	int tem;
+	for (; 1; p1++) {
+		if (map[r][p1].value != 0) {
+			p2 = p1;
+		}
+		else
+			for (p2 = p1; p2 < col && map[r][p2].value == 0; p2++)
+				;
+		if (p1 == col || p2 == col)
+			break;//说明到底了，否则说明找到
+		//如果找到则交换值
+		tem = map[r][p1].value;
+		map[r][p1].value = map[r][p2].value;
+		map[r][p2].value = tem;
+		map[r][p2].dcol = p1;
+		map[r][p2].drow = r;
+
+		//再向后找一个
+		for (p3 = p2 + 1; p3 < col && map[r][p3].value == 0; p3++)
+			;
+		if (p3 == col)
+			break;//说明到底了，否则说明找到
+		//上下两个值相等
+		if (map[r][p3].value == map[r][p1].value) {
+			map[r][p1].value *= 2;
+			score += map[r][p1].value;//计分
+			map[r][p3].value = 0;
+			map[r][p3].dcol = p1;
+			map[r][p3].drow = r;
+
+			map[r][p2].status = WAIT_COMBINE;
+			map[r][p3].status = COMBINE;
+		}
+
+	}
+	return 0;
+
+	/*int p1;
 	for (p1 = 0; p1 + 1 < col; p1++) {
 		if (map[r][p1].value == 0)
 			break;
@@ -142,12 +242,52 @@ int G2048::left_check(int r)
 		}
 	}
 	left_align(r);
-	return 0;
+	return 0;*/
 }
 
 int G2048::right_check(int r)
 {
-	int p1;
+	//up换down 1. ++->-- 2.p1 = row - 1; p1 - 1 >= 0; p1--
+	int p1 = row - 1, p2 = row - 1, p3 = row - 1;//p1为目标位置，p2为原位置
+	int tem;
+	for (; 1; p1--) {
+		if (map[r][p1].value != 0) {
+			p2 = p1;
+		}
+		else
+			for (p2 = p1; p2 >= 0 && map[r][p2].value == 0; p2--)
+				;
+		if (p1 < 0 || p2 < 0)
+			break;//说明到底了，否则说明找到
+		//如果找到则交换值
+		tem = map[r][p1].value;
+		map[r][p1].value = map[r][p2].value;
+		map[r][p2].value = tem;
+		map[r][p2].dcol = p1;
+		map[r][p2].drow = r;
+
+		//再向后找一个
+		for (p3 = p2 - 1; p3 >= 0 && map[r][p3].value == 0; p3--)
+			;
+		if (p3 < 0)
+			break;//说明到底了，否则说明找到
+		//上下两个值相等
+		if (map[r][p3].value == map[r][p1].value) {
+			map[r][p1].value *= 2;
+			score += map[r][p1].value;//计分
+			map[r][p3].value = 0;
+			map[r][p3].dcol = p1;
+			map[r][p3].drow = r;
+
+			map[r][p2].status = WAIT_COMBINE;
+			map[r][p3].status = COMBINE;
+		}
+
+	}
+	return 0;
+	
+	
+	/*int p1;
 	for (p1 = col - 1; p1 - 1 >= 0; p1--) {
 		if (map[r][p1].value == 0)
 			break;
@@ -162,7 +302,7 @@ int G2048::right_check(int r)
 		}
 	}
 	right_align(r);
-	return 0;
+	return 0;*/
 }
 
 G2048::G2048(const int Row, const int Col, const int Dst_score, const int Speed, const bool Sep)
@@ -252,7 +392,12 @@ int G2048::Init_map()
 		}
 	}
 
-	Produce_new_block(2, false);//内部操作，不显示色块show = false
+	map[3][1].value = 2;
+	map[3][3].value = 2;
+	map[3][4].value = 4;
+	map[3][6].value = 4;
+
+	//Produce_new_block(2, false);//内部操作，不显示色块show = false
 	return 0;
 }
 
@@ -332,37 +477,41 @@ int G2048::Game_start()
 					/* 下状态栏显示内容 */
 					gmw_status_line(&G2048_CGI, LOWER_STATUS_LINE, "[读到上箭头]", NULL);
 					//Align(DOWN_TO_UP);//对齐
-					score += Check_remove(DOWN_TO_UP);//检查消除，计分
+					Check_remove(DOWN_TO_UP);//检查消除，计分
 					Move_animation(DOWN_TO_UP);//显示移动合并动画
 					Clear_status();//清理状态
 					Produce_new_block(1);//生成并显示新球，记得新球要重置状态
+					//print_map();
 					break;
 				case KB_ARROW_DOWN:
 					/* 下状态栏显示内容 */
 					gmw_status_line(&G2048_CGI, LOWER_STATUS_LINE, "[读到下箭头]", NULL);
 					//Align(UP_TO_DOWN);//对齐
-					score += Check_remove(UP_TO_DOWN);//检查消除，计分
+					Check_remove(UP_TO_DOWN);//检查消除，计分
 					Move_animation(UP_TO_DOWN);//显示移动合并动画
 					Clear_status();//清理状态
 					Produce_new_block(1);//生成并显示新球，记得新球要重置状态
+					//print_map();
 					break;
 				case KB_ARROW_LEFT:
 					/* 下状态栏显示内容 */
 					gmw_status_line(&G2048_CGI, LOWER_STATUS_LINE, "[读到左箭头]", NULL);
 					//Align(RIGHT_TO_LEFT);//对齐
-					score += Check_remove(RIGHT_TO_LEFT);//检查消除，计分
+					Check_remove(RIGHT_TO_LEFT);//检查消除，计分
 					Move_animation(RIGHT_TO_LEFT);//显示移动合并动画
 					Clear_status();//清理状态
 					Produce_new_block(1);//生成并显示新球，记得新球要重置状态
+					//print_map();
 					break;
 				case KB_ARROW_RIGHT:
 					/* 下状态栏显示内容 */
 					gmw_status_line(&G2048_CGI, LOWER_STATUS_LINE, "[读到右箭头]", NULL);
 					//Align(LEFT_TO_RIGHT);//对齐
-					score += Check_remove(LEFT_TO_RIGHT);//检查消除，计分
+					Check_remove(LEFT_TO_RIGHT);//检查消除，计分
 					Move_animation(LEFT_TO_RIGHT);//显示移动合并动画
 					Clear_status();//清理状态
 					Produce_new_block(1);//生成并显示新球，记得新球要重置状态
+					//print_map();
 					break;
 				}
 				break;
@@ -457,13 +606,13 @@ int G2048::Move_animation(const int direction)
 				switch (map[i][j].status) {
 
 				case NORMAL:
-					g2048_move_block(&G2048_CGI, i, j, value, 0, bdi_normal, direction, abs(dr - i));
+					gmw_move_block(&G2048_CGI, i, j, value, 0, bdi_normal, direction, abs(dr - i));
 					break;
 				case WAIT_COMBINE:
-					g2048_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dr - i));
+					gmw_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dr - i));
 					break;
 				case COMBINE:
-					g2048_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dr - i));
+					gmw_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dr - i));
 					gmw_draw_block(&G2048_CGI, dr, map[i][j].dcol, value, bdi_normal);
 					break;
 				}
@@ -482,13 +631,13 @@ int G2048::Move_animation(const int direction)
 				switch (map[i][j].status) {
 
 				case NORMAL:
-					g2048_move_block(&G2048_CGI, i, j, value, 0, bdi_normal, direction, abs(dr - i));
+					gmw_move_block(&G2048_CGI, i, j, value, 0, bdi_normal, direction, abs(dr - i));
 					break;
 				case WAIT_COMBINE:
-					g2048_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dr - i));
+					gmw_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dr - i));
 					break;
 				case COMBINE:
-					g2048_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dr - i));
+					gmw_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dr - i));
 					gmw_draw_block(&G2048_CGI, dr, map[i][j].dcol, value, bdi_normal);
 					break;
 				}
@@ -506,13 +655,13 @@ int G2048::Move_animation(const int direction)
 				switch (map[i][j].status) {
 
 				case NORMAL:
-					g2048_move_block(&G2048_CGI, i, j, value, 0, bdi_normal, direction, abs(dc - i));
+					gmw_move_block(&G2048_CGI, i, j, value, 0, bdi_normal, direction, abs(dc - j));
 					break;
 				case WAIT_COMBINE:
-					g2048_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dc - i));
+					gmw_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dc - j));
 					break;
 				case COMBINE:
-					g2048_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dc - i));
+					gmw_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dc - j));
 					gmw_draw_block(&G2048_CGI, map[i][j].drow, dc, value, bdi_normal);
 					break;
 				}
@@ -530,13 +679,13 @@ int G2048::Move_animation(const int direction)
 				switch (map[i][j].status) {
 
 				case NORMAL:
-					g2048_move_block(&G2048_CGI, i, j, value, 0, bdi_normal, direction, abs(dc - i));
+					gmw_move_block(&G2048_CGI, i, j, value, 0, bdi_normal, direction, abs(dc - j));
 					break;
 				case WAIT_COMBINE:
-					g2048_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dc - i));
+					gmw_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dc - j));
 					break;
 				case COMBINE:
-					g2048_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dc - i));
+					gmw_move_block(&G2048_CGI, i, j, value / 2, 0, bdi_normal, direction, abs(dc - j));
 					gmw_draw_block(&G2048_CGI, map[i][j].drow, dc, value, bdi_normal);
 					break;
 				}
@@ -595,11 +744,12 @@ int G2048::Gameover()
 int G2048::print_map()
 {
 	cls();
+	cout << "score:" << score << endl;
 	cout << "内部数组:" << endl;
 	int i, j;
 	for (i = 0; i < row; i++) {
 		for (j = 0; j < col; j++)
-			cout << setw(4) << map[i][j].status;
+			cout << setw(4) << map[i][j].value;
 		cout << endl;
 	}
 	return 0;
@@ -816,7 +966,7 @@ int G2048::gmw_draw_block(const CONSOLE_GRAPHICS_INFO * const pCGI, const int ro
 
 }
 
-int G2048::g2048_move_block(const CONSOLE_GRAPHICS_INFO * const pCGI, const int row_no, const int col_no, const int bdi_value, const int blank_bdi_value, const BLOCK_DISPLAY_INFO * const bdi, const int direction, const int distance)
+int G2048::gmw_move_block(const CONSOLE_GRAPHICS_INFO * const pCGI, const int row_no, const int col_no, const int bdi_value, const int blank_bdi_value, const BLOCK_DISPLAY_INFO * const bdi, const int direction, const int distance)
 {
 	//先找到转换坐标
 	POS pos = { row_no, col_no, 0, 0 };
@@ -839,7 +989,8 @@ int G2048::g2048_move_block(const CONSOLE_GRAPHICS_INFO * const pCGI, const int 
 				showstr(X, Y - 1, pCGI->CFI.h_normal, pCGI->CFI.bgcolor, pCGI->CFI.fgcolor, pCGI->CFI.block_width / 2);
 			}
 			//更新位置坐标
-			pos.row--;
+			if (row > 0)
+				pos.row--;
 			gmw_inner_position_trans(pCGI, &pos);
 			X = pos.X;
 			Y = pos.Y;
@@ -854,7 +1005,8 @@ int G2048::g2048_move_block(const CONSOLE_GRAPHICS_INFO * const pCGI, const int 
 				showstr(X, Y + pCGI->CFI.block_high, pCGI->CFI.h_normal, pCGI->CFI.bgcolor, pCGI->CFI.fgcolor, pCGI->CFI.block_width / 2);
 			}
 			//更新位置坐标
-			pos.row++;
+			if (row < pCGI->row_num)
+				pos.row++;
 			gmw_inner_position_trans(pCGI, &pos);
 			X = pos.X;
 			Y = pos.Y;
@@ -871,7 +1023,8 @@ int G2048::g2048_move_block(const CONSOLE_GRAPHICS_INFO * const pCGI, const int 
 				}
 			}
 			//更新位置坐标
-			pos.col--;
+			if (col > 0)
+				pos.col--;
 			gmw_inner_position_trans(pCGI, &pos);
 			X = pos.X;
 			Y = pos.Y;
@@ -888,7 +1041,8 @@ int G2048::g2048_move_block(const CONSOLE_GRAPHICS_INFO * const pCGI, const int 
 				}
 			}
 			//更新位置坐标
-			pos.col++;
+			if (row < pCGI->col_num)
+				pos.col++;
 			gmw_inner_position_trans(pCGI, &pos);
 			X = pos.X;
 			Y = pos.Y;
