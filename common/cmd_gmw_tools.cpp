@@ -1359,7 +1359,7 @@ int gmw_draw_block(const CONSOLE_GRAPHICS_INFO *const pCGI, const int row_no, co
 ***************************************************************************/
 int gmw_inner_draw_block(const int X, const int Y, const CONSOLE_GRAPHICS_INFO *const pCGI, const int bdi_value, const BLOCK_DISPLAY_INFO *const bdi)
 {
-	Sleep(pCGI->delay_of_draw_block);
+	//Sleep(pCGI->delay_of_draw_block);
 	int bg, fg;
 
 	//寻找要画哪种类型的色块：
