@@ -115,17 +115,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\90-b5\90-b5-main.cpp" />
     <ClCompile Include="90-b2-yinyang.cpp" />
     <ClCompile Include="90-b4-test_gmw.cpp" />
     <ClCompile Include="cmd_console_test.cpp" />
     <ClCompile Include="cmd_console_tools.cpp" />
     <ClCompile Include="cmd_hdc_tools.cpp" />
     <ClCompile Include="common_tools.cpp" />
+    <ClCompile Include="md5.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cmd_console_tools.h" />
     <ClInclude Include="cmd_hdc_tools.h" />
+    <ClInclude Include="cmd_net_tools.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="md5.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="cmd_net_tools.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

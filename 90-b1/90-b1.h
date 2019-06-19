@@ -7,6 +7,7 @@
 #include <time.h>
 #include <Windows.h>
 #include <string.h>
+#include "../common/cmd_gmw_tools.h"
 
 struct ball_info {
 	int row;//Y
@@ -53,3 +54,65 @@ int Judge_select(int r1, int c1, int r2, int c2, struct ball_info map[][MAX_FRAM
 void Interface_array(int x, int y, struct ball_info map[][MAX_FRAME], int row, int col, const char str[], int sign_status);
 void Fallen_GUI(int sy, int sx, int ty, int tx, struct ball_info map[][MAX_FRAME]);
 void draw_the_ball(struct ball_info ball);
+
+/* 定义1-9的数字用何种形式显示在界面上
+   - 注：1、本例采用将“正常 + 选中 + 提示可消除 + 爆炸”信息放在四个数组中的方法
+		 2、实际实现中的数组值不要求如此，此处仅仅是为了色块的不同状态的显示
+		 3、在 test_color_linez 中用了另外一种方式表示色块的不同状态，可以对照 */
+
+		 /* 定义1-9的数字用何种形式显示在界面上（正常状态） */
+const BLOCK_DISPLAY_INFO bdi_normal[] = {
+	{BDI_VALUE_BLANK, -1, -1, "  "},  //0不显示，用空格填充即可
+	{1, COLOR_HBLACK, -1, "〇"},
+	{2, COLOR_YELLOW, -1, "〇"},
+	{3, COLOR_HGREEN, -1, "〇"},
+	{4, COLOR_HCYAN, -1, "〇"},
+	{5, COLOR_HRED, -1, "〇"},
+	{6, COLOR_HPINK, -1, "〇"},
+	{7, COLOR_HYELLOW, -1, "〇"},
+	{8, COLOR_CYAN, -1, "〇"},
+	{9, COLOR_WHITE, -1, "〇"},
+	{BDI_VALUE_END, -1, -1, NULL} //判断结束条件为content为NULL，前面-999无所谓
+};
+/* 定义1-9的数字用何种形式显示在界面上（选中状态） */
+const BLOCK_DISPLAY_INFO bdi_selected[] = {
+	{BDI_VALUE_BLANK, -1, -1, "  "},  //空白
+	{1, COLOR_HBLACK, -1, "●"},
+	{2, COLOR_YELLOW, -1, "●"},
+	{3, COLOR_HGREEN, -1, "●"},
+	{4, COLOR_HCYAN, -1, "●"},
+	{5, COLOR_HRED, -1, "●"},
+	{6, COLOR_HPINK, -1, "●"},
+	{7, COLOR_HYELLOW, -1, "●"},
+	{8, COLOR_CYAN, -1, "●"},
+	{9, COLOR_WHITE, -1, "●"},
+	{BDI_VALUE_END, -1, -1, NULL} //判断结束条件为content为NULL，前面-999无所谓
+};
+/* 定义1-9的数字用何种形式显示在界面上（可消除提示状态） */
+const BLOCK_DISPLAY_INFO bdi_prompt[] = {
+	{BDI_VALUE_BLANK, -1, -1, "  "},  //空白
+	{1, COLOR_HBLACK, -1, "◎"},
+	{2, COLOR_YELLOW, -1, "◎"},
+	{3, COLOR_HGREEN, -1, "◎"},
+	{4, COLOR_HCYAN, -1, "◎"},
+	{5, COLOR_HRED, -1, "◎"},
+	{6, COLOR_HPINK, -1, "◎"},
+	{7, COLOR_HYELLOW, -1, "◎"},
+	{8, COLOR_CYAN, -1, "◎"},
+	{9, COLOR_WHITE, -1, "◎"},
+	{BDI_VALUE_END, -1, -1, NULL} //判断结束条件为content为NULL，前面-999无所谓
+};
+/* 定义1-9的数字用何种形式显示在界面上（爆炸/消除状态） */
+const BLOCK_DISPLAY_INFO bdi_exploded[] = {
+	{BDI_VALUE_BLANK, -1, -1, "  "},  //空白
+	{1, COLOR_HBLACK, -1, "¤"},
+	{2, COLOR_YELLOW, -1, "¤"},
+	{3, COLOR_HGREEN, -1, "¤"},
+	{4, COLOR_HCYAN, -1, "¤"},
+	{5, COLOR_HRED, -1, "¤"},
+	{6, COLOR_HPINK, -1, "¤"},
+	{7, COLOR_HYELLOW, -1, "¤"},
+	{8, COLOR_CYAN, -1, "¤"},
+	{9, COLOR_WHITE, -1, "¤"},
+	{BDI_VALUE_END, -1, -1, NULL} //判断结束条件为content为NULL，前面-999无所谓
+};

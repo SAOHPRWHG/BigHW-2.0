@@ -1,6 +1,6 @@
 /* 1751957 计2班 俞少作 */
 #include "../common/cmd_hdc_tools.h"
-#include "../common/cmd_gmw_tools.h"
+
 #include "90-b0.h"
 using namespace std;
 /*敬爱的沈老师：

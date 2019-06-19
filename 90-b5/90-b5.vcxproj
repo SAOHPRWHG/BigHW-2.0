@@ -119,10 +119,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
-    <ClCompile Include="90-b5-main.cpp" />
+    <ClCompile Include="..\common\md5.cpp" />
+    <ClCompile Include="90-b5-test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\cmd_console_tools.h" />
+    <ClInclude Include="..\common\cmd_net_tools.h" />
+    <ClInclude Include="..\common\md5.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\common\cmd_net_tools.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
