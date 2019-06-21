@@ -121,7 +121,9 @@
     <ClCompile Include="..\common\cmd_console_tools.cpp" />
     <ClCompile Include="..\common\cmd_gmw_tools.cpp" />
     <ClCompile Include="90-b4-main.cpp" />
-    <ClCompile Include="G2048.cpp" />
+    <ClCompile Include="G2048.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\cmd_console_tools.h" />

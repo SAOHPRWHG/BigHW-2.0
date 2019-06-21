@@ -1619,6 +1619,7 @@ int gmw_read_keyboard_and_mouse(const CONSOLE_GRAPHICS_INFO *const pCGI, int &MA
 				case MOUSE_LEFT_BUTTON_DOUBLE_CLICK:	//Ë«»÷×ó¼ü
 					//cout << "Ë«»÷×ó¼ü      " << endl;
 					//showch(X, Y, '2');			//ÔÚÊó±êÖ¸ÕëÎ»ÖÃÏÔÊ¾2
+					return CCT_MOUSE_EVENT;
 					break;
 				case MOUSE_RIGHT_BUTTON_CLICK:			//°´ÏÂÓÒ¼ü
 					//cout << "°´ÏÂÓÒ¼ü      " << endl;

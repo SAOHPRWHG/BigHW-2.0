@@ -1,6 +1,6 @@
 /* 1751957 ¼Æ2°à ÓáÉÙ×÷ */
 #include "90-b4.h"
-#include "G2048.h"
+#include "G2048.cpp"
 using namespace std;
 
 void Input(int * x, int lower, int upper, const char str[])

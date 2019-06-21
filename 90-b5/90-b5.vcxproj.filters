@@ -18,10 +18,16 @@
     <ClCompile Include="..\common\cmd_console_tools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="90-b5-test.cpp">
+    <ClCompile Include="..\common\md5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\md5.cpp">
+    <ClCompile Include="90-b5-main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cmd_gmw_tools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BplC.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,6 +39,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\common\md5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cmd_gmw_tools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="90-b5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BplC.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
