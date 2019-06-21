@@ -39,14 +39,17 @@ public:
 	//friend class Plane;
 };
 
-const int PLANE_SPACE = 10;//飞机身体所占空间
+
+const int PLANE_SIZE = 10;//飞机身体所占空间
 class Plane {
 private:
 	Point head;
 	Point tail;	
+	Point plane[PLANE_SIZE];
+	double possible;//每架飞机的存在可能性
 public:
-	Point plane[PLANE_SPACE];
-	Plane(const int hdr, const int hdc, const int tlr, const int tlc)
+	friend class BplC;
+	Plane(const int hdr = -1, const int hdc = -1, const int tlr = -1, const int tlc = -1)
 	{
 		head.row = hdr;
 		head.col = hdc;
@@ -161,6 +164,123 @@ public:
 				plane[8].col = head.col + (-1);
 			}
 		}
+	}
+	void set(Point Head, Point Tail)
+	{
+		head.row = Head.row;
+		head.col = Head.col;
+		tail.row = Tail.row;
+		tail.col = Tail.col;
+		int dir_row = Tail.row - Head.row;//横行方向，若为正则<-  ,若为负则->,为零则为纵向
+		int dir_col = Tail.col - Head.col;//若为正机头向上，若为负机头向下
+		if (dir_row == 0) {
+			/*上*/
+			if (dir_col > 0) {
+				//上
+				plane[0] = head;
+				plane[9] = tail;
+				/*机翼*/
+				plane[1].row = head.row;
+				plane[1].col = head.col + 1;
+				plane[2].row = head.row - 1;
+				plane[2].col = head.col + 1;
+				plane[3].row = head.row - 2;
+				plane[3].col = head.col + 1;
+				plane[4].row = head.row + 1;
+				plane[4].col = head.col + 1;
+				plane[5].row = head.row + 2;
+				plane[5].col = head.col + 1;
+
+				plane[6].row = head.row;
+				plane[6].col = head.col + 2;
+
+				/*机尾*/
+				plane[7].row = head.row - 1;
+				plane[7].col = head.col + 3;
+				plane[8].row = head.row + 1;
+				plane[8].col = head.col + 3;
+			}
+			else if (dir_col < 0) {
+				//下
+				plane[0] = head;
+				plane[9] = tail;
+				/*机翼*/
+				plane[1].row = head.row;
+				plane[1].col = head.col + (-1);
+				plane[2].row = head.row - (-1);
+				plane[2].col = head.col + (-1);
+				plane[3].row = head.row - (-2);
+				plane[3].col = head.col + (-1);
+				plane[4].row = head.row + (-1);
+				plane[4].col = head.col + (-1);
+				plane[5].row = head.row + (-2);
+				plane[5].col = head.col + (-1);
+
+				plane[6].row = head.row;
+				plane[6].col = head.col + (-2);
+
+				/*机尾*/
+				plane[7].row = head.row - (-1);
+				plane[7].col = head.col + (-3);
+				plane[8].row = head.row + (-1);
+				plane[8].col = head.col + (-3);
+			}
+		}
+		else if (dir_col == 0) {
+			if (dir_row > 0) {
+				/*左*/
+				plane[0] = head;
+				plane[9] = tail;
+				/*机翼*/
+				plane[1].row = head.row + 1;
+				plane[1].col = head.col;
+				plane[2].row = head.row + 1;
+				plane[2].col = head.col - 1;
+				plane[3].row = head.row + 1;
+				plane[3].col = head.col - 2;
+				plane[4].row = head.row + 1;
+				plane[4].col = head.col + 1;
+				plane[5].row = head.row + 1;
+				plane[5].col = head.col + 2;
+
+				plane[6].row = head.row + 2;
+				plane[6].col = head.col;
+
+				/*机尾*/
+				plane[7].row = head.row + 3;
+				plane[7].col = head.col - 1;
+				plane[8].row = head.row + 3;
+				plane[8].col = head.col + 1;
+
+
+			}
+			else if (dir_row < 0) {
+				//右
+				plane[0] = head;
+				plane[9] = tail;
+				/*机翼*/
+				plane[1].row = head.row + (-1);
+				plane[1].col = head.col;
+				plane[2].row = head.row + (-1);
+				plane[2].col = head.col - (-1);
+				plane[3].row = head.row + (-1);
+				plane[3].col = head.col - (-2);
+				plane[4].row = head.row + (-1);
+				plane[4].col = head.col + (-1);
+				plane[5].row = head.row + (-1);
+				plane[5].col = head.col + (-2);
+
+				plane[6].row = head.row + (-2);
+				plane[6].col = head.col;
+
+				/*机尾*/
+				plane[7].row = head.row + (-3);
+				plane[7].col = head.col - (-1);
+				plane[8].row = head.row + (-3);
+				plane[8].col = head.col + (-1);
+			}
+		}
+
 	}
 	int is_plane()
 	{

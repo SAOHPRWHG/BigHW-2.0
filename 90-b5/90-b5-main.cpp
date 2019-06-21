@@ -125,62 +125,132 @@ int game_progress(cmd_tcp_socket &client)
 ***************************************************************************/
 int game_progress_GUI(cmd_tcp_socket &client)
 {
-	while (2) {
-		int sel;
-		char row, head_row, tail_row;
-		int col, head_col, tail_col;
-		bool recv_startgame = false;
-		char buffer[CHAR_LEN];
 
-		BplC bpl;
+	int sel;
+	char row, head_row, tail_row;
+	int col, head_col, tail_col;
+	bool recv_startgame = false;
+	char buffer[CHAR_LEN];
 
-		bpl.Init_map();
-		bpl.Init_frame();
+	BplC bpl;
 
-		while (1) {
-			/* 等待Server端的gameprogress */
-			string spack;
-			if (client.get_gameprogress_string(spack) < 0) {
-				return -1;
-			}
+	bpl.Init_map();
+	bpl.Init_frame();
 
-			//cout << "Server应答 : " << spack << endl;
-			sprintf(buffer, "Server应答 :  %s", (char*)spack.data());
-			gmw_status_line(&bpl.BplC_CGI, TOP_STATUS_LINE, buffer);
+	while (1) {
+		/* 等待Server端的gameprogress */
+		string spack;
+		if (client.get_gameprogress_string(spack) < 0) {
+			return -1;
+		}
 
-			if (spack == "StartGame")
-				recv_startgame = true;
-			else
-				bpl.Explode_animation(row, col, head_row, head_col, tail_row, tail_col, sel, spack);
-			/* 没收到StartGame前所有其他信息均认为错误 */
-			if (!recv_startgame)
-				return -1;
+		//cout << "Server应答 : " << spack << endl;
+		sprintf(buffer, "Server应答 :  %s", (char*)spack.data());
+		gmw_status_line(&bpl.BplC_CGI, TOP_STATUS_LINE, buffer);
 
-			if (spack == "GameOver") {
-				char tem1[CHAR_LEN], tem2[CHAR_LEN];
-				sprintf(tem1, "本次GameID : %s", client.get_gameid());
-				sprintf(tem2, "本次得分   :  %d", client.get_score());
-				gmw_status_line(&bpl.BplC_CGI, LOWER_STATUS_LINE, tem1);
-				//cout << "本次GameID : " << client.get_gameid() << endl;
-				cout << endl << "本次得分   : " << client.get_score() << endl;
-				getchar();
-				break;
-			}
+		if (spack == "StartGame")
+			recv_startgame = true;
+		else
+			bpl.Explode_animation(row, col, head_row, head_col, tail_row, tail_col, sel, spack);
+		/* 没收到StartGame前所有其他信息均认为错误 */
+		if (!recv_startgame)
+			return -1;
 
-			sel = bpl.Select_space_by_mouse(row, col, head_row, head_col, tail_row, tail_col);
-			//cout <<"看这里："<< row << col;
-			switch (sel) {
-			case 1:
-				client.send_coordinate(row, col);
-				break;
-			case 2:
-				client.send_plane_coordinates(head_row, head_col, tail_row, tail_col);
-				break;
-			}
+		if (spack == "GameOver") {
+			char tem1[CHAR_LEN], tem2[CHAR_LEN];
+			sprintf(tem1, "本次GameID : %s", client.get_gameid());
+			sprintf(tem2, "本次得分   :  %d", client.get_score());
+			gmw_status_line(&bpl.BplC_CGI, LOWER_STATUS_LINE, tem1);
+			//cout << "本次GameID : " << client.get_gameid() << endl;
+			cout << endl << "本次得分   : " << client.get_score() << endl;
+			getchar();
+			return 0;
+		}
 
-		}//end of while(1)
-	}//end of while(2)
+		sel = bpl.Select_space_by_mouse(row, col, head_row, head_col, tail_row, tail_col);
+		//cout <<"看这里："<< row << col;
+		switch (sel) {
+		case 1:
+			client.send_coordinate(row, col);
+			break;
+		case 2:
+			client.send_plane_coordinates(head_row, head_col, tail_row, tail_col);
+			break;
+		}
+
+	}//end of while(1)
+
 }
+
+/***************************************************************************
+  函数名称：
+  功    能：
+  输入参数：
+  返 回 值：
+  说    明：
+***************************************************************************/
+int game_progress_auto(cmd_tcp_socket &client)
+{
+
+	int sel=0;
+	char row=0, head_row=0, tail_row=0;
+	int col=0, head_col=0, tail_col=0;
+	bool recv_startgame = false;
+	char buffer[CHAR_LEN];
+
+	BplC bpl;  //
+	 
+	bpl.Init_Airport();
+	bpl.Init_map();
+	bpl.Init_frame();
+
+	while (1) {
+		/* 等待Server端的gameprogress */
+		string spack;
+		if (client.get_gameprogress_string(spack) < 0) {
+			return -1;
+		}
+
+		//cout << "Server应答 : " << spack << endl;
+		sprintf(buffer, "Server应答 :  %s", (char*)spack.data());
+		gmw_status_line(&bpl.BplC_CGI, TOP_STATUS_LINE, buffer);
+
+		if (spack == "StartGame")
+			recv_startgame = true;
+		else
+			bpl.Explode_animation(row, col, head_row, head_col, tail_row, tail_col, sel, spack, 0 );
+		/* 没收到StartGame前所有其他信息均认为错误 */
+		if (!recv_startgame)
+			return -1;
+
+		if (spack == "GameOver") {
+			char tem1[CHAR_LEN], tem2[CHAR_LEN];
+			sprintf(tem1, "本次GameID : %s", client.get_gameid());
+			sprintf(tem2, "本次得分   :  %d", client.get_score());
+			gmw_status_line(&bpl.BplC_CGI, LOWER_STATUS_LINE, tem1);
+			//cout << "本次GameID : " << client.get_gameid() << endl;
+			cout << endl << "本次得分   : " << client.get_score() << endl;
+			return 0;
+		}
+		bpl.print_map();
+		bpl.print_possible_map();
+		bpl.print_Airport();
+		bpl.Update_possible(spack, sel, row, col, head_row, head_col, tail_row, tail_col);//更新概率地图
+		sel = bpl.Predict(row, col, head_row, head_col, tail_row, tail_col);//换成bpl.Predict
+		//cout <<"看这里："<< row << col;
+		switch (sel) {
+		case 1:
+			client.send_coordinate(row, col);
+			break;
+		case 2:
+			client.send_plane_coordinates(head_row, head_col, tail_row, tail_col);
+			break;
+		}
+
+	}//end of while(1)
+
+}
+
 
 /***************************************************************************
   函数名称：
@@ -198,12 +268,19 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+	int mode;
+
 	/* 给个明确提示的demo */
 	if (strcmp(argv[1], "-auto") == 0) {
-		cout << "Demo中未实现自动游戏" << endl;
+		mode = 1;
+	}
+	else if (strcmp(argv[1], "-manual") == 0) {
+		mode = 2;
+	}
+	else {
+		cout << "Usage : " << argv[0] << " -auto|-manual  stu_no  stu_pwd" << endl;
 		return -1;
 	}
-
 	/* 其余合理性检查未做，需要自己补
 	   1、argv[1]除 -auto -manual 外均错误
 	   2、学号7位
@@ -256,13 +333,29 @@ int main(int argc, char **argv)
 		   1、必须收到Server的StartGame，才能收发后续
 		   2、收到Server的GameOver则返回0，游戏结束
 		   3、其它错误均返回-1（报文信息不正确等错误），重连，再次重复	*/
-		if (game_progress_GUI(client) < 0) {
-			client.close();
-			continue;
+		if (mode == 2) {//-manual模式
+			if (game_progress_GUI(client) < 0) {
+				client.close();
+				continue;
+			}
+			else {
+				/* game_progress只有收到 GameOver 才返回 0 */
+				client.close();
+				continue;
+				break;
+			}
 		}
-		else {
-			/* game_progress只有收到 GameOver 才返回 0 */
-			break;
+		else if (mode == 1) {//-auto模式
+			if (game_progress_auto(client) < 0) {
+				client.close();
+				continue;
+			}
+			else {
+				/* game_progress只有收到 GameOver 才返回 0 */
+				client.close();
+				continue;
+				break;
+			}
 		}
 	};
 
