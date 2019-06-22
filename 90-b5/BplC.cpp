@@ -154,7 +154,7 @@ int BplC::Update_possible(const string spack, const int sel, const char _row, co
 			for (k = 0; k < PLANE_NUMBER; k++) {
 				if (Airport[k].possible > 0 && Airport[k].possible < 1.99 && Airport[k].head.row == row && Airport[k].head.col == col) {
 					//Airport[k].possible += 0.5;
-					Airport[k].possible += 0.6;
+					Airport[k].possible += 0.7;
 					//break;
 				}
 			}

@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "BplC.cpp"
 using namespace std;
-
+   
 /***************************************************************************
   函数名称：
   功    能：将学号+MD5(password)再用security_str按位异或后形成要发送的“报道”数据
@@ -32,6 +32,7 @@ int cmd_tcp_socket::make_register_string(char *send_regstr, const char *stu_no, 
 	char org_regstr[40 + 1];
 	strcpy(org_regstr, stu_no);
 	strcat(org_regstr, "-");
+	//strcat(org_regstr, "A");
 	strcat(org_regstr, md5_password);
 	cout << "认证串(原始)：" << org_regstr << endl;
 	cout << "异或串      ：" << security_str << endl;
@@ -281,7 +282,7 @@ int game_progress_auto(cmd_tcp_socket &client)
 		//bpl.print_Airport();
 		sel = bpl.Predict(row, col, head_row, head_col, tail_row, tail_col);//换成bpl.Predict
 		step++;
-																			//cout <<"看这里："<< row << col;
+		
 		switch (sel) {			
 		case 1:
 			client.send_coordinate(row, col);
