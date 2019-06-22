@@ -153,7 +153,8 @@ int BplC::Update_possible(const string spack, const int sel, const char _row, co
 			//头
 			for (k = 0; k < PLANE_NUMBER; k++) {
 				if (Airport[k].possible > 0 && Airport[k].possible < 1.99 && Airport[k].head.row == row && Airport[k].head.col == col) {
-					Airport[k].possible += 0.5;
+					//Airport[k].possible += 0.5;
+					Airport[k].possible += 0.6;
 					//break;
 				}
 			}
@@ -183,8 +184,6 @@ int BplC::Update_possible(const string spack, const int sel, const char _row, co
 				flag = 0;
 				if (k == K)
 					continue;
-				if (k == 91)
-					k = k;
 				for (i = 0; i < PLANE_SIZE; i++) {
 					for (j = 0; j < PLANE_SIZE; j++) {
 						if ( Airport[k].plane[i].row == Airport[K].plane[j].row && Airport[k].plane[i].col == Airport[K].plane[j].col) {
@@ -225,7 +224,13 @@ int BplC::Predict(char & row, int & col, char & head_row, int & head_col, char &
 		}
 	}
 	//是否增加打头策略
-
+	for (k = 0; k < PLANE_NUMBER; k++) {
+		if (Airport[k].possible > 0.5 && Airport[k].possible < 1.999 && map[Airport[k].head.row][Airport[k].head.col] == 0) {
+			row = Airport[k].head.row + 'A';
+			col = Airport[k].head.col;
+			return 1;//sel=1，直接打头
+		}
+	}
 
 	//寻找超过0.9的项
 	for (k = 0; k < PLANE_NUMBER; k++) {

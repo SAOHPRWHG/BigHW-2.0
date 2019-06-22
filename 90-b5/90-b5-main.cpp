@@ -237,6 +237,7 @@ int game_progress_auto(cmd_tcp_socket &client)
 	int col=0, head_col=0, tail_col=0;
 	bool recv_startgame = false;
 	char buffer[CHAR_LEN];
+	int step = 0;
 
 	BplC bpl;  //
 	 
@@ -270,7 +271,7 @@ int game_progress_auto(cmd_tcp_socket &client)
 			gmw_status_line(&bpl.BplC_CGI, LOWER_STATUS_LINE, tem1);
 			//cout << "本次GameID : " << client.get_gameid() << endl;
 			cout << endl << "本次得分   : " << client.get_score() << endl;
-			return 0;
+			return step;
 		}
 
 		
@@ -279,9 +280,9 @@ int game_progress_auto(cmd_tcp_socket &client)
 		//bpl.print_possible_map();
 		//bpl.print_Airport();
 		sel = bpl.Predict(row, col, head_row, head_col, tail_row, tail_col);//换成bpl.Predict
-		
+		step++;
 																			//cout <<"看这里："<< row << col;
-		switch (sel) {
+		switch (sel) {			
 		case 1:
 			client.send_coordinate(row, col);
 			break;
@@ -339,6 +340,8 @@ int main(int argc, char **argv)
 	int test_no = 0;
 	static int score = 0;
 	static int count = 0;
+	static int all_step = 0;
+	int step;
 	while (test_no < 52) {
 		
 		if (!first) { //出任何错误，延时5秒重连（不包括第一次）
@@ -385,6 +388,7 @@ int main(int argc, char **argv)
 		   1、必须收到Server的StartGame，才能收发后续
 		   2、收到Server的GameOver则返回0，游戏结束
 		   3、其它错误均返回-1（报文信息不正确等错误），重连，再次重复	*/
+		
 		if (mode == 2) {//-manual模式
 			if (game_progress_GUI(client) < 0) {
 				client.close();
@@ -397,19 +401,20 @@ int main(int argc, char **argv)
 				break;
 			}
 		}
+		
 		else if (mode == 1) {//-auto模式
-			if (game_progress_auto(client) < 0) {
+			if ((step = game_progress_auto(client)) < 0) {
 				test_no--;
-				client.close();
+				//client.close();
 				continue;
 			}
 			else {
 				/* game_progress只有收到 GameOver 才返回 0 */
 				//client.close();
 				score += client.get_score();
+				all_step += step;
 				count++;
 				continue;
-				break;
 			}
 		}
 	};//end of while
@@ -419,6 +424,7 @@ int main(int argc, char **argv)
 	cout << "游戏结束" << endl;
 	cout << "总得分：" << score << endl;
 	cout << "平均得分：" << score / double(count)<< endl;
+	cout << "平均步数：" << all_step / double(count) << endl;
 	cout << "计分次数：" << count << endl;
 
 
