@@ -223,14 +223,6 @@ int BplC::Predict(char & row, int & col, char & head_row, int & head_col, char &
 				possible_map[Airport[k].plane[i].row][Airport[k].plane[i].col] += Airport[k].possible;
 		}
 	}
-	//是否增加打头策略
-	for (k = 0; k < PLANE_NUMBER; k++) {
-		if (Airport[k].possible > 0.5 && Airport[k].possible < 1.999 && map[Airport[k].head.row][Airport[k].head.col] == 0) {
-			row = Airport[k].head.row + 'A';
-			col = Airport[k].head.col;
-			return 1;//sel=1，直接打头
-		}
-	}
 
 	//寻找超过0.9的项
 	for (k = 0; k < PLANE_NUMBER; k++) {
@@ -240,6 +232,14 @@ int BplC::Predict(char & row, int & col, char & head_row, int & head_col, char &
 			tail_row = Airport[k].tail.row + 'A';
 			tail_col = Airport[k].tail.col;
 			return 2;//sel=2，直接打飞机
+		}
+	}
+	//是否增加打头策略
+	for (k = 0; k < PLANE_NUMBER; k++) {
+		if (Airport[k].possible > 0.5 && Airport[k].possible < 1.999 && map[Airport[k].head.row][Airport[k].head.col] == 0) {
+			row = Airport[k].head.row + 'A';
+			col = Airport[k].head.col;
+			return 1;//sel=1，直接打头
 		}
 	}
 
