@@ -50,6 +50,46 @@ int cmd_tcp_socket::make_register_string(char *send_regstr, const char *stu_no, 
 	return 0;
 }
 
+int cmd_tcp_socket::make_register_string_auto(const int test_no, char *send_regstr, const char *stu_no, const char *stu_password, const char *security_str)
+{ 
+	/* 需要自己实现 */
+	char md5_password[32 + 1];
+	MD5(md5_password, stu_password);
+	cout << "口令(加密后)：" << md5_password << endl;
+	char org_regstr[40 + 1];
+	strcpy(org_regstr, stu_no);
+	if (test_no < 26) {
+		org_regstr[7] = char(test_no + 'A');
+		org_regstr[8] = '\0';
+	}
+	else if(test_no < 52) {
+		org_regstr[7] = char(test_no - 26 + 'a');
+		org_regstr[8] = '\0';
+	}
+	else {
+		cout << "测试结束" << endl;
+		return 0;
+	}
+	//strcat(org_regstr, "-");
+	strcat(org_regstr, md5_password);
+	cout << "认证串(原始)：" << org_regstr << endl;
+	cout << "异或串      ：" << security_str << endl;
+	char mid_regstr[40 + 1];
+	int i;
+	for (i = 0; org_regstr[i]; i++) {
+		mid_regstr[i] = org_regstr[i] ^ security_str[i];
+	}
+	/*cout << "mid_regstr:"  ;
+	for (i = 0; org_regstr[i]; i++)
+		printf("%02x ", mid_regstr[i]);
+	cout << endl;*/
+	for (i = 0; org_regstr[i]; i++)
+		sprintf(send_regstr + 2 * i, "%02x", mid_regstr[i]);
+	cout << "认证串(Hex发送) ：" << send_regstr << endl;
+	return 0;
+}
+
+
 
 /***************************************************************************
   函数名称：
@@ -232,12 +272,15 @@ int game_progress_auto(cmd_tcp_socket &client)
 			cout << endl << "本次得分   : " << client.get_score() << endl;
 			return 0;
 		}
-		bpl.print_map();
-		bpl.print_possible_map();
-		bpl.print_Airport();
-		bpl.Update_possible(spack, sel, row, col, head_row, head_col, tail_row, tail_col);//更新概率地图
+
+		
+		bpl.Update_possible(spack, sel, row, col, head_row, head_col, tail_row, tail_col);//更新概率地图		
+		//bpl.print_map();
+		//bpl.print_possible_map();
+		//bpl.print_Airport();
 		sel = bpl.Predict(row, col, head_row, head_col, tail_row, tail_col);//换成bpl.Predict
-		//cout <<"看这里："<< row << col;
+		
+																			//cout <<"看这里："<< row << col;
 		switch (sel) {
 		case 1:
 			client.send_coordinate(row, col);
@@ -293,10 +336,14 @@ int main(int argc, char **argv)
 	/* 打开client类对象中的debug开关（调试时可打开，到图形界面时需关闭） */
 	client.set_debug_switch(false);
 
-	while (1) {
+	int test_no = 0;
+	static int score = 0;
+	static int count = 0;
+	while (test_no < 52) {
+		
 		if (!first) { //出任何错误，延时5秒重连（不包括第一次）
 			cout << "与服务器的连接断开!" << endl;
-			Sleep(sleep_ms);
+			//Sleep(sleep_ms);
 		}
 		else
 			first = false;
@@ -324,7 +371,12 @@ int main(int argc, char **argv)
 		   3、可参考tmake_register_string，测试时会将此函数从lib中移除   */
 		char reg_str[81];
 		//client.tmake_register_string(reg_str, "1850000", "185-0*0%0@0", s1.c_str()); //预置的测试用户（已失效）
-		client.make_register_string(reg_str, argv[2], argv[3], s1.c_str()); //传自己的学号和密码
+		if (mode == 1) {
+			client.make_register_string_auto(test_no,reg_str, argv[2], argv[3], s1.c_str()); //传自己的学号和密码
+			test_no++;
+		}
+		else if(mode==2)
+			client.make_register_string(reg_str, argv[2], argv[3], s1.c_str()); //传自己的学号和密码
 
 		/* 将认证串发送过去 */
 		client.send_register_string(reg_str);
@@ -347,20 +399,28 @@ int main(int argc, char **argv)
 		}
 		else if (mode == 1) {//-auto模式
 			if (game_progress_auto(client) < 0) {
+				test_no--;
 				client.close();
 				continue;
 			}
 			else {
 				/* game_progress只有收到 GameOver 才返回 0 */
-				client.close();
+				//client.close();
+				score += client.get_score();
+				count++;
 				continue;
 				break;
 			}
 		}
-	};
+	};//end of while
 
 	client.close();
+	cls();
 	cout << "游戏结束" << endl;
+	cout << "总得分：" << score << endl;
+	cout << "平均得分：" << score / double(count)<< endl;
+	cout << "计分次数：" << count << endl;
+
 
 	return 0;
 }

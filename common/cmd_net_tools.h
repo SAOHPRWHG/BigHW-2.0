@@ -47,4 +47,6 @@ public:
 		/* 最后两个函数需要实现 */
 		int get_gameprogress_string(string &s);	//从Server端取游戏反馈信息（从StartGame到GameOver，未实现完整，需自行进一步处理）
 		int make_register_string(char *send_regstr, const char *stu_no, const char *stu_password, const char *security_str); //用学号、密码、异或串生成要发送的认证串，需实现
+		int make_register_string_auto(const int test_no, char *send_regstr, const char *stu_no, const char *stu_password, const char *security_str);
+
 };

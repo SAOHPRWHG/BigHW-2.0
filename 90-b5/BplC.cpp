@@ -53,8 +53,8 @@ int BplC::Init_frame()
 
 	//	gmw_set_ext_rowcol(&ColorLinez_CGI, 3, 2, 10, 10);						//注：不设置附加区域，可能导致to_be_continued打印为两行，此问题未处理（后面同）
 	gmw_set_color(&BplC_CGI, COLOR_BLACK, COLOR_HWHITE);			//整个窗口颜色//
-	gmw_set_font(&BplC_CGI, "新宋体", 32);		//字体
-	//gmw_set_font(&BplC_CGI, "新宋体", 16);							//字体
+	//gmw_set_font(&BplC_CGI, "新宋体", 32);		//字体
+	gmw_set_font(&BplC_CGI, "新宋体", 20);							//字体
 //	gmw_set_frame_style(&BplC_CGI);									//游戏主区域风格：每个色块宽2高1，有分隔线
 	gmw_set_frame_default_linetype(&BplC_CGI, 2);					//游戏主区域线型：单线
 	gmw_set_frame_color(&BplC_CGI, COLOR_HWHITE, COLOR_BLACK);		//游戏主区域颜色
@@ -152,9 +152,9 @@ int BplC::Update_possible(const string spack, const int sel, const char _row, co
 			int i, k;
 			//头
 			for (k = 0; k < PLANE_NUMBER; k++) {
-				for (i = 0; i < PLANE_SIZE; i++) {
-					if (Airport[k].possible > 0 && Airport[k].possible < 2 && Airport[k].head.row == row && Airport[k].head.col == col)
-						Airport[k].possible += 0.5;
+				if (Airport[k].possible > 0 && Airport[k].possible < 1.99 && Airport[k].head.row == row && Airport[k].head.col == col) {
+					Airport[k].possible += 0.5;
+					//break;
 				}
 			}
 			//身体
@@ -171,9 +171,9 @@ int BplC::Update_possible(const string spack, const int sel, const char _row, co
 		if (spack == "HitPlane" || spack == "GameOver") {
 			int i, j, k;
 			for (k = 0; k < PLANE_NUMBER; k++) {
-				for (i = 0; i < PLANE_SIZE; i++) {
-					if (Airport[k].possible > 0 && Airport[k].possible < 2 && Airport[k].head.row == head_row && Airport[k].head.col == head_col && Airport[k].tail.row == tail_row && Airport[k].tail.col == tail_col)
-						Airport[k].possible = 2;
+				if (Airport[k].possible > 0 && Airport[k].possible < 1.99 && Airport[k].head.row == head_row && Airport[k].head.col == head_col && Airport[k].tail.row == tail_row && Airport[k].tail.col == tail_col){
+					Airport[k].possible = 2;
+					break;
 				}
 			}
 			//把所有身体覆盖的飞机置零
@@ -183,6 +183,8 @@ int BplC::Update_possible(const string spack, const int sel, const char _row, co
 				flag = 0;
 				if (k == K)
 					continue;
+				if (k == 91)
+					k = k;
 				for (i = 0; i < PLANE_SIZE; i++) {
 					for (j = 0; j < PLANE_SIZE; j++) {
 						if ( Airport[k].plane[i].row == Airport[K].plane[j].row && Airport[k].plane[i].col == Airport[K].plane[j].col) {
@@ -197,12 +199,10 @@ int BplC::Update_possible(const string spack, const int sel, const char _row, co
 			}
 		}
 		else if (spack == "HitFail") {
-			int i, k;
+			int k;
 			for (k = 0; k < PLANE_NUMBER; k++) {
-				for (i = 0; i < PLANE_SIZE; i++) {
-					if (Airport[k].head.row == head_row && Airport[k].head.col == head_col && Airport[k].tail.row == tail_row && Airport[k].tail.col == tail_col)
-						Airport[k].possible = 0;
-				}
+				if (Airport[k].head.row == head_row && Airport[k].head.col == head_col && Airport[k].tail.row == tail_row && Airport[k].tail.col == tail_col)
+					Airport[k].possible = 0;
 			}
 		}
 	}
@@ -217,8 +217,11 @@ int BplC::Predict(char & row, int & col, char & head_row, int & head_col, char &
 
 	//重新计算概率地图
 	for (k = 0; k < PLANE_NUMBER; k++) {
+		if (fabs(Airport[k].possible-2)<1e-5)//确定的飞机不计算在内
+			continue;
 		for (i = 0; i < PLANE_SIZE; i++) {
-			possible_map[Airport[k].plane[i].row][Airport[k].plane[i].col] += Airport[k].possible;
+			if(map[Airport[k].plane[i].row][Airport[k].plane[i].col]==0)
+				possible_map[Airport[k].plane[i].row][Airport[k].plane[i].col] += Airport[k].possible;
 		}
 	}
 	//是否增加打头策略
@@ -226,7 +229,7 @@ int BplC::Predict(char & row, int & col, char & head_row, int & head_col, char &
 
 	//寻找超过0.9的项
 	for (k = 0; k < PLANE_NUMBER; k++) {
-		if (Airport[k].possible > 0.91 && Airport[k].possible < 2) {
+		if (Airport[k].possible > 0.91 && Airport[k].possible < 1.999) {
 			head_row = Airport[k].head.row + 'A';
 			head_col = Airport[k].head.col;
 			tail_row = Airport[k].tail.row + 'A';
@@ -306,7 +309,7 @@ int BplC::Select_space_by_mouse(char & row, int & col, char & head_row, int & he
 	return 0;
 }
 
-int BplC::Explode_animation(const char row, const int col, const char head_row, const int head_col, const char tail_row, const int tail_col, const int sel, string spack,const int show_explode)
+int BplC::Explode_animation(const char row, const int col, const char head_row, const int head_col, const char tail_row, const int tail_col, const int sel, string spack,const int show_explode, const int fast_mode)
 {
 	int r = row - 'A';//将行换成int型
 	int hr = head_row - 'A';
@@ -324,15 +327,18 @@ int BplC::Explode_animation(const char row, const int col, const char head_row, 
 		}
 		if (spack == "HitFail") {
 			map[r][col] = HIT_FAIL;
-			gmw_draw_block(&BplC_CGI, r, col, map[r][col], bdi_normal);
+			if(!fast_mode)
+				gmw_draw_block(&BplC_CGI, r, col, map[r][col], bdi_normal);
 		}
 		else if (spack == "HitBody") {
 			map[r][col] = HIT_BODY;
-			gmw_draw_block(&BplC_CGI, r, col, map[r][col], bdi_normal);
+			if (!fast_mode)
+				gmw_draw_block(&BplC_CGI, r, col, map[r][col], bdi_normal);
 		}
 		else if (spack == "HitHead") {
 			map[r][col] = HIT_HEAD;
-			gmw_draw_block(&BplC_CGI, r, col, map[r][col], bdi_normal);
+			if (!fast_mode)
+				gmw_draw_block(&BplC_CGI, r, col, map[r][col], bdi_normal);
 		}
 	}
 	/*整机轰炸*/
@@ -347,8 +353,8 @@ int BplC::Explode_animation(const char row, const int col, const char head_row, 
 					map[pl.plane[i].row][pl.plane[i].col] = HIT_HEAD;
 				else
 					map[pl.plane[i].row][pl.plane[i].col] = HIT_BODY;
-
-				gmw_draw_block(&BplC_CGI, pl.plane[i].row, pl.plane[i].col, map[pl.plane[i].row][pl.plane[i].col], bdi_normal);
+				if (!fast_mode)
+					gmw_draw_block(&BplC_CGI, pl.plane[i].row, pl.plane[i].col, map[pl.plane[i].row][pl.plane[i].col], bdi_normal);
 			}
 		}
 	}
@@ -357,6 +363,7 @@ int BplC::Explode_animation(const char row, const int col, const char head_row, 
 
 int BplC::print_map()
 {
+	setcolor(3, 15);
 	cls();
 	cout << "map:" << endl;
 	int i, j;
@@ -370,12 +377,13 @@ int BplC::print_map()
 
 int BplC::print_possible_map()
 {
+	setcolor(3, 15);
 	cls();
 	cout << "possible_map:" << endl;
 	int i, j;
 	for (i = 0; i < ROW; i++) {
 		for (j = 0; j < COL; j++)
-			cout << setw(6) << possible_map[i][j];
+			cout << setw(8) << possible_map[i][j];
 		cout << endl;
 	}
 	return 0;
@@ -383,11 +391,12 @@ int BplC::print_possible_map()
 
 int BplC::print_Airport()
 {
+	setcolor(3, 15);
 	cls();
 	int k;
 	for (k = 0; k < PLANE_NUMBER; k++) {
-		cout << "No：" << k << "  Head:(" << Airport[k].head.row << " ," << Airport[k].head.col;
-		cout<<"  Tail:("<< Airport[k].tail.row << " ," << Airport[k].tail.col;
+		cout << "No：" << k << "  Head:(" << Airport[k].head.row << " ," << Airport[k].head.col<<")";
+		cout<<"  Tail:("<< Airport[k].tail.row << " ," << Airport[k].tail.col<<")";
 		cout << "  Possible: " << Airport[k].possible << endl;
 	}
 

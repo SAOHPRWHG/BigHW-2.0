@@ -1057,7 +1057,8 @@ int gmw_draw_frame(const CONSOLE_GRAPHICS_INFO *const pCGI)
 	/*重置窗口工作*/
 	setcolor(pCGI->area_bgcolor, pCGI->area_fgcolor);
 	setfontsize(pCGI->CFT.font_type, pCGI->CFT.font_size_high, pCGI->CFT.font_size_width);
-	setconsoleborder(pCGI->cols, pCGI->lines,pCGI->cols, pCGI->lines);
+	//setconsoleborder(pCGI->cols, pCGI->lines,pCGI->cols, pCGI->lines);
+	setconsoleborder(pCGI->cols, pCGI->lines, 100, 5000);
 
 	const int X = pCGI->start_x;
 	const int Y = pCGI->start_y;
