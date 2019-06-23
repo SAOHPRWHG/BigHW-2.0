@@ -112,7 +112,7 @@ void draw_frame(int X, int Y, int row, int col, const int bg_color = COLOR_HWHIT
 		showstr(X, Y + i, frame[3], bg_color, ft_color);
 		showstr(X + 1, Y + i, frame[4], bg_color, ft_color, col);
 		showstr(X + 1 + col * 2, Y + i, frame[5], bg_color, ft_color);
-		cout << endl;
+		gotoxy(0, Y + i + 1);
 	}
 	showstr(X, Y + 1 + row, frame[6], bg_color, ft_color);
 	showstr(X + 1, Y + 1 + row, frame[7], bg_color, ft_color, col);

@@ -21,6 +21,7 @@ public:
 	int Init_possible_map();//初始化概率地图
 	int Update_possible(const string spack, const int sel, const char row, const int col, const char head_row, const int head_col, const char tail_row, const int tail_col);
 	int Predict(char & row, int & col, char & head_row, int & head_col, char & tail_row, int & tail_col);//给出下一步预测
+	int Predict_s(char & row, int & col, char & head_row, int & head_col, char & tail_row, int & tail_col);//基于信息熵的计算
 	int Select_space_by_mouse(char & row, int & col, char & head_row, int & head_col, char & tail_row, int & tail_col);//用鼠标选择
 	int Explode_animation(const char row, const int col, const char head_row, const int head_col, const char tail_row, const int tail_col,const int sel, string spack, const int show_explode = 1, const int fast_mode = 0);//爆炸动画
 	int print_map();//打印当前内部数组

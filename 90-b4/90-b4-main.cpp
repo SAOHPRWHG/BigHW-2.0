@@ -1,4 +1,5 @@
 /* 1751957 ¼Æ2°à ÓáÉÙ×÷ */
+#define _CRT_SECURE_NO_WARNINGS
 #include "90-b4.h"
 #include "G2048.cpp"
 using namespace std;

@@ -261,6 +261,60 @@ int BplC::Predict(char & row, int & col, char & head_row, int & head_col, char &
 	return 1;//sel=1,单点打击
 }
 
+int BplC::Predict_s(char & row, int & col, char & head_row, int & head_col, char & tail_row, int & tail_col)
+{
+	int i, j, k;
+	//清零概率地图
+	Init_possible_map();
+
+	//重新计算概率地图
+	for (k = 0; k < PLANE_NUMBER; k++) {
+		if (fabs(Airport[k].possible - 2) < 1e-5)//确定的飞机不计算在内
+			continue;
+		for (i = 0; i < PLANE_SIZE; i++) {
+			if (map[Airport[k].plane[i].row][Airport[k].plane[i].col] == 0)
+				possible_map[Airport[k].plane[i].row][Airport[k].plane[i].col] += -Airport[k].possible * log(Airport[k].possible) - (1- Airport[k].possible)*log(1 - Airport[k].possible);
+		}
+	}
+
+	//寻找超过0.9的项
+	for (k = 0; k < PLANE_NUMBER; k++) {
+		if (Airport[k].possible > 0.91 && Airport[k].possible < 1.999) {
+			head_row = Airport[k].head.row + 'A';
+			head_col = Airport[k].head.col;
+			tail_row = Airport[k].tail.row + 'A';
+			tail_col = Airport[k].tail.col;
+			return 2;//sel=2，直接打飞机
+		}
+	}
+	//是否增加打头策略
+	for (k = 0; k < PLANE_NUMBER; k++) {
+		if (Airport[k].possible > 0.5 && Airport[k].possible < 1.999 && map[Airport[k].head.row][Airport[k].head.col] == 0) {
+			row = Airport[k].head.row + 'A';
+			col = Airport[k].head.col;
+			return 1;//sel=1，直接打头
+		}
+	}
+
+	//否则计算地图上信息熵最小的点
+	int max_row = 0, max_col = 0;
+	double maxP = 0;
+	for (i = 0; i < ROW; i++) {
+		for (j = 0; j < COL; j++) {
+			if (map[i][j] == 0 && possible_map[i][j] > maxP) {
+				maxP = possible_map[i][j];
+				max_row = i;
+				max_col = j;//记录最大概率的位置信息
+			}
+		}
+	}
+
+	row = max_row + 'A';
+	col = max_col;
+	return 1;//sel=1,单点打击
+}
+
+
 /***************************************************************************
   函数名称：用鼠标选择打击坐标
   功    能：

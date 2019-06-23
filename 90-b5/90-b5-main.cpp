@@ -274,7 +274,7 @@ int game_progress_auto(cmd_tcp_socket &client)
 			cout << endl << "本次得分   : " << client.get_score() << endl;
 			return step;
 		}
-
+		   
 		
 		bpl.Update_possible(spack, sel, row, col, head_row, head_col, tail_row, tail_col);//更新概率地图		
 		//bpl.print_map();
